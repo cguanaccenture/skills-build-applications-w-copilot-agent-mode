@@ -1,0 +1,35 @@
+
+from djongo import models
+from django.contrib.auth.models import AbstractUser
+
+
+class Team(models.Model):
+    _id = models.ObjectIdField()
+    name = models.CharField(max_length=100, unique=True)
+    def __str__(self):
+        return self.name
+
+
+class User(AbstractUser):
+    _id = models.ObjectIdField()
+    email = models.EmailField(unique=True)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+class Activity(models.Model):
+    _id = models.ObjectIdField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50)
+    duration = models.IntegerField()  # minutes
+
+
+class Leaderboard(models.Model):
+    _id = models.ObjectIdField()
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    points = models.IntegerField(default=0)
+
+
+class Workout(models.Model):
+    _id = models.ObjectIdField()
+    name = models.CharField(max_length=100)
+    description = models.TextField()
